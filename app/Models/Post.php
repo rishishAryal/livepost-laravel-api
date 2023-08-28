@@ -12,4 +12,8 @@ class Post extends Model
       'body'=>'array'
     ];
 
+    public function comments(){
+        return $this->hasMany(Comment::class,'post_id',);
+    }
+
 }
