@@ -13,8 +13,14 @@ use \App\Http\Controllers\UserController;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
+Route::prefix('v1')
+    ->group(function (){
+        require __DIR__ . '/api/v1/users.php';
+        require __DIR__ . '/api/v1/posts.php';
+        require __DIR__ . '/api/v1/comments.php';
+});
 
-require __DIR__ .'/api/users.php';
+
 
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
