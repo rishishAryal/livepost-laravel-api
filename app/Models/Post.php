@@ -9,6 +9,8 @@ class Post extends Model
 {
     use HasFactory;
 
+
+
     public function getTitleUpperCaseAttribute(){
         return strtoupper($this->title);
     }
@@ -17,6 +19,10 @@ class Post extends Model
     }
     protected $casts = [
       'body'=>'array'
+    ];
+    protected $fillable = [
+        'body',
+        'title'
     ];
 
     public function comments(){
