@@ -20,7 +20,7 @@ Route::middleware([
 
         Route::post('/users', [UserController::class, 'store'])->name('store');
 
-        Route::patch('/users/{user}', [UserController::class, 'update'])->name('update');
+        Route::post('/users/{user}', [UserController::class, 'update'])->name('update');
 
         Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('destroy');
     });

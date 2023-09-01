@@ -44,10 +44,12 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-    public function comments(){
+    public function comments(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
         return $this->hasMany(Comment::class,'user_id');
     }
-    public function posts(){
+    public function posts(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
         return $this->belongsToMany(Post::class,'post_user','user_id','post_id');
     }
 }

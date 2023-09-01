@@ -18,7 +18,7 @@ Route::middleware([
 
         Route::post('/comments', [CommentController::class, 'store'])->name('store');
 
-        Route::patch('/comments/{comment}', [CommentController::class, 'update'])->name('update');
+        Route::post('/comments/{comment}', [CommentController::class, 'update'])->name('update');
 
         Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('destroy');
     });
