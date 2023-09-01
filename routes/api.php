@@ -1,8 +1,10 @@
 <?php
 
+use App\Helpers\Routes\RouteHelper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use \App\Http\Controllers\UserController;
+use \App\Helpers\Routes;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -15,9 +17,11 @@ use \App\Http\Controllers\UserController;
 */
 Route::prefix('v1')
     ->group(function (){
-        require __DIR__ . '/api/v1/users.php';
-        require __DIR__ . '/api/v1/posts.php';
-        require __DIR__ . '/api/v1/comments.php';
+
+        RouteHelper::includeRouteFile(__DIR__.'/api/v1');
+//        require __DIR__ . '/api/v1/users.php';
+//        require __DIR__ . '/api/v1/posts.php';
+//        require __DIR__ . '/api/v1/comments.php';
 });
 
 
