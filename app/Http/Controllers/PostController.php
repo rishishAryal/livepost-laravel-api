@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 
+use App\Http\Resources\PostResource;
 use App\Models\Post;
 
 use Illuminate\Http\JsonResponse;
@@ -15,48 +16,46 @@ class PostController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(): JsonResponse
+    public function index(): \Illuminate\Http\Resources\Json\AnonymousResourceCollection
     {
         $posts = Post::query()->get();
 
-        return new JsonResponse([
-           'data'=>$posts
-        ]);
+        return PostResource::collection($posts);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request): JsonResponse
+    public function store(Request $request): PostResource
     {
        $created=  DB::transaction(function () use($request){
             $created= Post::query()->create([
                 'title'=>$request->title,
                 'body'=>$request->body,
             ]);
+            if($userIds=$request->user_ids){
+                $created->users()->sync($userIds);
+            }
             $created->users()->sync($request->user_ids);
             return $created;
 
         });
-        return new JsonResponse([
-            'data'=>$created
-        ]);
+        return new PostResource($created);
+
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Post $post): JsonResponse
+    public function show(Post $post): PostResource
     {
-        return new JsonResponse([
-            'data'=>$post
-        ]);
+        return new PostResource($post);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Post $post): JsonResponse
+    public function update(Request $request, Post $post): PostResource|JsonResponse
     {
 //        $post->update($request->only(['title', 'body']));
 
@@ -70,9 +69,7 @@ class PostController extends Controller
             ], 400);
         }
 
-        return new JsonResponse([
-            'data' => $post
-        ]);
+        return new PostResource($post);
 
     }
 

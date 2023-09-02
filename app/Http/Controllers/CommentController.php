@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\CommentResource;
 use App\Models\Comment;
+use App\Models\Post;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -11,47 +14,43 @@ class CommentController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return JsonResponse
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
-    public function index(): JsonResponse
+    public function index(): \Illuminate\Http\Resources\Json\AnonymousResourceCollection
     {
         $comments = Comment::query()->get();
 
-        return new JsonResponse([
-            'data' => $comments,
-        ]);
+        return  CommentResource::Collection($comments);
     }
 
     /**
      * Store a newly created resource in storage.
      *
      * @param Request $request
-     * @return JsonResponse
+     * @return CommentResource
      */
-    public function store(Request $request): JsonResponse
+    public function store(Request $request): CommentResource
     {
+
         $created = Comment::query()->create([
-            'title' => $request->title,
+
             'body' => $request->body,
+            'user_id'=>User::all()->random()->id,
+            'post_id'=>Post::all()->random()->id
         ]);
 
-        return new JsonResponse([
-            'data' => $created,
-        ]);
-
+        return new CommentResource($created);
     }
 
     /**
      * Display the specified resource.
      *
      * @param Comment $comment
-     * @return JsonResponse
+     * @return CommentResource
      */
-    public function show(Comment $comment): JsonResponse
+    public function show(Comment $comment): CommentResource
     {
-        return new JsonResponse([
-            'data' => $comment,
-        ]);
+        return new CommentResource($comment);
     }
 
     /**
@@ -61,10 +60,10 @@ class CommentController extends Controller
      * @param Comment $comment
      * @return JsonResponse
      */
-    public function update(Request $request, Comment $comment): JsonResponse
+    public function update(Request $request, Comment $comment): JsonResponse | CommentResource
     {
         $updated = $comment->update([
-            'title' => $request->title ?? $comment->title,
+
             'body' => $request->body ?? $comment->body,
         ]);
 
@@ -74,9 +73,7 @@ class CommentController extends Controller
             ]);
         }
 
-        return new JsonResponse([
-            'data' => $comment
-        ]);
+        return new CommentResource($updated);
     }
 
     /**

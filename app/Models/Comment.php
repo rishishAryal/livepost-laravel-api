@@ -11,7 +11,12 @@ class Comment extends Model
     protected $casts = [
         'body'=>'array'
     ];
+    protected $fillable = [
 
+        'body',
+        'user_id',
+        'post_id',
+    ];
     public function post(){
         return $this->belongsTo(Post::class,'post_id');
     }
