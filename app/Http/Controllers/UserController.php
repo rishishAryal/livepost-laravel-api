@@ -14,9 +14,10 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
-    public function index(): \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+    public function index(Request $request): \Illuminate\Http\Resources\Json\AnonymousResourceCollection
     {
-        $users = User::query()->get();
+        $pageSize = $request->page_size?? 20;
+        $users = User::query()->paginate($pageSize);
 
         return UserResource::collection($users);
     }

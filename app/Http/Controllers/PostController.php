@@ -16,9 +16,10 @@ class PostController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(): \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+    public function index(Request $request): \Illuminate\Http\Resources\Json\AnonymousResourceCollection
     {
-        $posts = Post::query()->get();
+        $pageSize = $request->page_size?? 20;
+        $posts = Post::query()->paginate($pageSize);
 
         return PostResource::collection($posts);
     }

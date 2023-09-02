@@ -16,9 +16,10 @@ class CommentController extends Controller
      *
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
-    public function index(): \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+    public function index(Request $request): \Illuminate\Http\Resources\Json\AnonymousResourceCollection
     {
-        $comments = Comment::query()->get();
+        $pageSize = $request->page_size?? 20;
+        $comments = Comment::query()->paginate($pageSize);
 
         return  CommentResource::Collection($comments);
     }
