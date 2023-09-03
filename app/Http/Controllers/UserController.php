@@ -4,15 +4,18 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\UserResource;
 use App\Models\User;
+use App\Repositories\UserRepository;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class UserController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     * @param Request $request
+     * @return AnonymousResourceCollection
      */
     public function index(Request $request): \Illuminate\Http\Resources\Json\AnonymousResourceCollection
     {
@@ -26,16 +29,16 @@ class UserController extends Controller
      * Store a newly created resource in storage.
      *
      * @param Request $request
+     * @param UserRepository $repository
      * @return UserResource
      */
-    public function store(Request $request): UserResource
+    public function store(Request $request,UserRepository $repository): UserResource
     {
-        $created = User::query()->create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => $request->password,
-            'email_verified_at'=>now()
-        ]);
+    $created= $repository->create([
+        'name'=>$request->name,
+        'email'=>$request->email,
+        'password'=>$request->password
+    ]);
 
         return new UserResource($created);
     }
@@ -56,22 +59,19 @@ class UserController extends Controller
      *
      * @param Request $request
      * @param User $user
+     * @param UserRepository $repository
      * @return JsonResponse|UserResource
      */
-    public function update(Request $request, User $user): JsonResponse | UserResource
+    public function update(Request $request, User $user,UserRepository $repository): JsonResponse | UserResource
     {
-        $updated = $user->update([
-            'name' => $request->name ?? $user->name,
-            'email' => $request->email ?? $user->email,
-            'password' => $request->password ?? $user->password,
+
+        $user =$repository->update($user,[
+            'name'=> $request->name ?? $user->name,
+            'email'=>$request->email ?? $user->email,
+            'password'=>$request->password ?? $user->password
 
         ]);
 
-        if(!$updated){
-            return new JsonResponse([
-                'error' => 'Failed to update resource.',
-            ]);
-        }
 
         return new UserResource($user);
     }
@@ -80,16 +80,13 @@ class UserController extends Controller
      * Remove the specified resource from storage.
      *
      * @param User $user
+     * @param UserRepository $repository
      * @return JsonResponse
      */
-    public function destroy(User $user): JsonResponse
+    public function destroy(User $user, UserRepository $repository): JsonResponse
     {
-        $deleted = $user->forceDelete();
-        if(!$deleted){
-            return new JsonResponse([
-                'error' => 'Failed to delete resource.'
-            ]);
-        }
+       $deleted=$repository->forceDelete($user);
+
         return new JsonResponse([
             'data' => 'success',
         ]);

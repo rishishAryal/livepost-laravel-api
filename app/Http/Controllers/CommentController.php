@@ -6,15 +6,18 @@ use App\Http\Resources\CommentResource;
 use App\Models\Comment;
 use App\Models\Post;
 use App\Models\User;
+use App\Repositories\CommentRepository;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class CommentController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     * @param Request $request
+     * @return AnonymousResourceCollection
      */
     public function index(Request $request): \Illuminate\Http\Resources\Json\AnonymousResourceCollection
     {
@@ -28,16 +31,16 @@ class CommentController extends Controller
      * Store a newly created resource in storage.
      *
      * @param Request $request
+     * @param CommentRepository $repository
      * @return CommentResource
      */
-    public function store(Request $request): CommentResource
+    public function store(Request $request,CommentRepository $repository): CommentResource
     {
 
-        $created = Comment::query()->create([
-
-            'body' => $request->body,
-            'user_id'=>User::all()->random()->id,
-            'post_id'=>Post::all()->random()->id
+        $created = $repository->create([
+            'body'=>$request->body,
+            'user_id'=>$request->user_id,
+            'post_id'=>$request->post_id
         ]);
 
         return new CommentResource($created);
@@ -61,20 +64,14 @@ class CommentController extends Controller
      * @param Comment $comment
      * @return JsonResponse
      */
-    public function update(Request $request, Comment $comment): JsonResponse | CommentResource
+    public function update(Request $request, Comment $comment, CommentRepository $repository): JsonResponse | CommentResource
     {
-        $updated = $comment->update([
+      $comment=$repository->update($comment,[
+          'body'=>$request->body
+      ]);
 
-            'body' => $request->body ?? $comment->body,
-        ]);
 
-        if(!$updated){
-            return new JsonResponse([
-                'error' => 'Failed to update resource.'
-            ]);
-        }
-
-        return new CommentResource($updated);
+        return new CommentResource($comment);
     }
 
     /**
@@ -83,15 +80,11 @@ class CommentController extends Controller
      * @param Comment $comment
      * @return JsonResponse
      */
-    public function destroy(Comment $comment): JsonResponse
+    public function destroy(Comment $comment,CommentRepository $repository): JsonResponse
     {
-        $deleted = $comment->forceDelete();
+      $deleted =  $repository->forceDelete($comment);
 
-        if(!$deleted){
-            return new JsonResponse([
-                'error' => 'Failed to delete resource.'
-            ]);
-        }
+
         return new JsonResponse([
             'data' => 'success',
         ]);
