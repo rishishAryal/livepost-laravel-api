@@ -4,8 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\CommentResource;
 use App\Models\Comment;
-use App\Models\Post;
-use App\Models\User;
 use App\Repositories\CommentRepository;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;

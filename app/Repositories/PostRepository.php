@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Exceptions\GeneralJsonException;
 use App\Models\Post;
 use Illuminate\Support\Facades\DB;
 
@@ -15,6 +16,10 @@ class PostRepository extends BaseRepository
                 'title' => data_get($attributes, 'title', 'Untitled'),
                 'body' => data_get($attributes, 'body'),
             ]);
+//            if (!$created){
+//                throw  new GeneralJsonException('Failed to Create a post');
+//            }
+            throw_if(!$created,GeneralJsonException::class,'Failed to Create a post');
             if($userIds = data_get($attributes, 'user_ids')){
 
                 $created->users()->sync($userIds);
@@ -30,10 +35,9 @@ public function update( $post, array $attributes){
             'body' => data_get($attributes,'body',[]),
         ]);
 
-            if (!$updated){
-                throw new \Exception('Failed to update post');
-            }
-             if($userIds = data_get($attributes,'user_ids')){
+           throw_if(!$updated,GeneralJsonException::class,'Failed to Update a post');
+
+           if($userIds = data_get($attributes,'user_ids')){
               $post->users()->sync($userIds);
         }
              return $post;
@@ -44,9 +48,8 @@ public function forceDelete( $post )
 {
     return DB::transaction(function () use ($post){
         $deleted = $post->forceDelete();
-        if(!$deleted){
-            throw  new \Exception('Cannot delete post');
-        }
+        throw_if(!$deleted,GeneralJsonException::class,'Failed to Delete a post');
+
         return $deleted;
     });
 
