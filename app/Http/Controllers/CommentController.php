@@ -62,7 +62,8 @@ class CommentController extends Controller
      *
      * @param Request $request
      * @param Comment $comment
-     * @return JsonResponse
+     * @param CommentRepository $repository
+     * @return JsonResponse|CommentResource
      */
     public function update(Request $request, Comment $comment, CommentRepository $repository): JsonResponse | CommentResource
     {
@@ -78,6 +79,7 @@ class CommentController extends Controller
      * Remove the specified resource from storage.
      *
      * @param Comment $comment
+     * @param CommentRepository $repository
      * @return JsonResponse
      */
     public function destroy(Comment $comment,CommentRepository $repository): JsonResponse
