@@ -1,34 +1,30 @@
 <?php
 
-namespace App\Events;
+namespace App\Events\Models\Post;
 
-use App\Models\User;
-use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class UserCreated
+class PostCreated
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    Protected User $user;
+    protected $post;
 
     /**
      * Create a new event instance.
      */
-    public function __construct(User $user)
+    public function __construct($post)
     {
-        $this->user =$user;
+        $this->post = $post;
     }
 
     /**
      * Get the channels the event should broadcast on.
      *
-     * @return array<int, Channel>
+     * @return array<int, \Illuminate\Broadcasting\Channel>
      */
     public function broadcastOn(): array
     {
