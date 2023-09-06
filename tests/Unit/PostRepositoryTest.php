@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+use App\Exceptions\GeneralJsonException;
 use App\Models\Post;
 use App\Repositories\PostRepository;
 use Tests\TestCase;
@@ -41,7 +42,12 @@ class PostRepositoryTest extends TestCase
         $this->assertSame($payload['title'],$updated->title,'updated post doesnt have the same title');
 
     }
-
+    public function test_delete_will_throw_exception_when_delete_post_that_doesnt_exist(){
+        $repository =$this->app->make(PostRepository::class);
+        $dummy = Post::factory(1)->make()->first();
+        $this->expectException(GeneralJsonException::class);
+        $deleted = $repository->forceDelete($dummy);
+    }
 
     public function test_delete(){
         $repository =$this->app->make(PostRepository::class);

@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+use App\Exceptions\GeneralJsonException;
 use App\Models\Comment;
 use App\Repositories\CommentRepository;
 use Tests\TestCase;
@@ -36,6 +37,16 @@ class CommentRepositoryTest extends TestCase
         $updated =   $repository->update($dummyComment,$payload);
         $this->assertSame($payload['body'],$updated->body,'Update Comment body is not same');
     }
+    public function test_delete_will_throw_exception_when_delete_comment_that_doesnt_exist()
+    {
+        // env
+        $repository = $this->app->make(CommentRepository::class);
+        $dummy = Comment::factory(1)->make()->first();
+
+        $this->expectException(GeneralJsonException::class);
+        $deleted = $repository->forceDelete($dummy);
+    }
+
     public function test_delete(){
         $repository = $this->app->make(CommentRepository::class);
         $dummyComment = Comment::factory(1)->create()[0];

@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+use App\Exceptions\GeneralJsonException;
 use App\Models\User;
 use App\Repositories\UserRepository;
 use Tests\TestCase;
@@ -30,6 +31,16 @@ class UserRepositoryTest extends TestCase
     ];
     $updated = $repository->update($dummyUser,$payload);
     $this->assertSame($payload['name'],$updated->name,'Updated name is not same');
+    }
+
+    public function test_delete_will_throw_exception_when_delete_user_that_doesnt_exist()
+    {
+        // env
+        $repository = $this->app->make(UserRepository::class);
+        $dummy = User::factory(1)->make()->first();
+
+        $this->expectException(GeneralJsonException::class);
+        $deleted = $repository->forceDelete($dummy);
     }
     public function test_delete(){
         $repository = $this->app->make(UserRepository::class);
