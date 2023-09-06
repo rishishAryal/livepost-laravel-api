@@ -7,6 +7,7 @@ use App\Models\Comment;
 use App\Models\Post;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use function Termwind\render;
 
 class CommentRepository extends BaseRepository
 {
@@ -21,7 +22,7 @@ class CommentRepository extends BaseRepository
                 'post_id'=>data_get($attributes,'post_id')
             ]);
             throw_if(!$created,GeneralJsonException::class,'Failed to Create a Comment');
-
+            return $created;
         });
     }
 

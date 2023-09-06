@@ -33,9 +33,9 @@ class UserRepository extends BaseRepository
     {
         return DB::transaction(function () use($user,$attributes){
             $updated = $user->update([
-                'name' => data_get($attributes,'name' ),
-                'email' => data_get($attributes,'email'),
-                'password' => data_get($attributes,'password'),
+                'name' => data_get($attributes,'name',$user->name ),
+                'email' => data_get($attributes,'email',$user->email),
+                'password' => data_get($attributes,'password',$user->password),
 
             ]);
             throw_if(!$updated,GeneralJsonException::class,'Failed to Update a post');

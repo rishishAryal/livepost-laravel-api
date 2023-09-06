@@ -11,12 +11,12 @@ class Post extends Model
 
 
 
-    public function getTitleUpperCaseAttribute(){
-        return strtoupper($this->title);
-    }
-    public function setTitleAttribute($value){
-        $this->attributes['title']= strtolower($value);
-    }
+//    public function getTitleUpperCaseAttribute(){
+//        return strtoupper($this->title);
+//    }
+//    public function setTitleAttribute($value){
+//        $this->attributes['title']= strtolower($value);
+//    }
     protected $casts = [
       'body'=>'array'
     ];
