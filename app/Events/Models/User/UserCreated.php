@@ -13,7 +13,7 @@ class UserCreated
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    Protected User $user;
+    public  $user;
 
     /**
      * Create a new event instance.
